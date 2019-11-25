@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState , useRef ,  memo} from 'react';
 import Try from './Try';
 
 function getNumbers() { // 숫자 네 개를 겹치지 않고 랜덤하게 뽑는 함수
@@ -10,11 +10,13 @@ function getNumbers() { // 숫자 네 개를 겹치지 않고 랜덤하게 뽑�
     }
     return array;
 }
-const NumberBaseball = () => {
+const NumberBaseball = memo(() => {
     const [result , setResult] = useState('');
     const [value , setValue] = useState('');
     const [answer , setAnswer] = useState(getNumbers());
     const [tries , setTries] = useState([]);
+    const inputRef = useRef(null);
+    
 
     const onSubmitFrom = (e) => {
         e.preventDefault();
@@ -49,6 +51,7 @@ const NumberBaseball = () => {
                     return [...prevTries , {try : value , result : `${strike} 스트라이크 , ${ball} 볼입니다`}]
                 });
                 setValue('');
+                inputRef.current.focus();
             }
         }
 
@@ -62,7 +65,7 @@ const NumberBaseball = () => {
         <>
             <h1>{result}</h1>
             <form onSubmit={onSubmitFrom}>
-                <input maxLength={4} value={value} onChange={onChangeInput} />
+                <input maxLength={4} value={value} ref={inputRef} onChange={onChangeInput} />
             </form>
             <div>시도 : {tries.length}</div>
             <ul>
@@ -79,7 +82,7 @@ const NumberBaseball = () => {
             </ul>
         </>
     );
-}
+})
 
 
 export default NumberBaseball;
